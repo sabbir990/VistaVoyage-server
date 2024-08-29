@@ -2,12 +2,16 @@ const express = require("express");
 const app = express();
 require('dotenv').config();
 const port = process.env.PORT || 8000;
-const jwt = require('jsonwebtoken')
 const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+  ]
+}));
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -187,7 +191,7 @@ async function run() {
       const updateDoc = {
         $set: {
           role: role,
-          status : 'updated'
+          status: 'updated'
         }
       }
 
@@ -313,7 +317,7 @@ async function run() {
       res.send(result);
     })
 
-    app.post('/post-story', async(req, res) => {
+    app.post('/post-story', async (req, res) => {
       const story = req.body;
       const result = await storyCollection.insertOne(story);
       res.send(result);
