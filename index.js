@@ -210,6 +210,7 @@ async function run() {
       }
 
       const result = await wishlistCollection.insertOne(package);
+      console.log(result);
       res.send(result)
     })
 
@@ -321,6 +322,17 @@ async function run() {
     app.post('/post-story', async (req, res) => {
       const story = req.body;
       const result = await storyCollection.insertOne(story);
+      res.send(result);
+    })
+
+    app.get('/searched-packages/:search', async(req, res) => {
+      const input = req.params.search;
+
+      const filter = {
+        title : {$regex : input, $options : 'i'}
+      }
+
+      const result = await packageCollection.find(filter).toArray();
       res.send(result);
     })
 
